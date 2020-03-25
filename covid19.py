@@ -8,13 +8,15 @@ Usage:
 
 Options:
   -c COUNTRIES, --countries COUNTRIES  : Comma-separated Geo IDs (e.g. CN,IT)
-    or [default: all] or "top"
-  -o FIGURE, --output FIGURE  : Output figure path [default: COVID-19.png]
+      or [default: all] or "top"
+  -o PATH, --output PATH  : Output path [default: COVID-19.png].
+      Can be *.txt (use stdout.txt for stdout).
   --log LEVEL  : (FAT|CRITIC)AL|ERROR|WARN(ING)|[default: INFO]|DEBUG|NOTSET
 
 %s
 """
 import logging
+import sys
 
 from argopt import argopt
 import pandas as pd
@@ -26,9 +28,59 @@ __author__ = "Casper da Costa-Luis <casper.dcl@physics.org>"
 log = logging.getLogger(__name__)
 
 
+def get_top_geoIds(df, key="Cases", top=10):
+    ids = df.groupby('GeoId').aggregate({"Cases": sum, "Deaths": sum}).sort_values(key)[-top:][::-1]
+    return list(ids.index)
+
 def run(args):
     """@param args: RunArgs"""
     df = pd.read_csv("COVID-19.csv", parse_dates=["DateRep"], dayfirst=True)
+
+    # text-only of latest data
+    if args.output.lower().endswith('.txt'):
+        countries = (args.countries or "all").split(',')
+
+        if args.output[:-4].lower() in ("stdout", "-"):
+            fd = sys.stdout
+            fd_close = lambda: None
+        else:
+            fd = open(args.output, "w")
+            fd_close = fd.close
+
+        print("ID Date        Cases(change) Deaths(chg)", file=fd)
+        if "top" in countries:
+            i = countries.index("top")
+            countries = countries[:i] + get_top_geoIds(df) + countries[i + 1:]
+        if "all" not in countries:
+            df = df[df['GeoId'].apply(lambda x: x in countries)]
+
+        sums = df.groupby("GeoId").aggregate({"Cases": sum, "Deaths": sum})
+
+        for country in countries:
+            if country == "all":
+                totals = df.groupby("DateRep").aggregate({"Cases": sum, "Deaths": sum})
+                last = totals.iloc[-1]
+                print(
+                    "-- {last.name:%Y-%m-%d} {tot[Cases]:>6d}({last[Cases]:>6d}) {tot[Deaths]:>5d}({last[Deaths]:>4d})".format(
+                        last=last,
+                        tot=totals.sum(),
+                    ),
+                    file=fd
+                )
+                continue
+
+            last = df[df["GeoId"] == country].iloc[0]
+            print(
+                "{country} {last[DateRep]:%Y-%m-%d} {tot[Cases]:>6d}({last[Cases]:>6d}) {tot[Deaths]:>5d}({last[Deaths]:>4d})".format(
+                    country=country,
+                    last=last,
+                    tot=sums.loc[country],
+                ),
+                file=fd
+            )
+
+        fd_close()
+        return
 
     if not args.countries or args.countries.lower() == "all":
         title = "World"
@@ -39,36 +91,12 @@ def run(args):
     else:
         title = "Cases"
         if args.countries.lower() == "top":
-            ids = df.groupby('GeoId').aggregate({"Cases": sum, "Deaths": sum}).sort_values("Cases")[-10:][::-1]
-            countries = ids.index
+            countries = get_top_geoIds(df)
         elif ',' in args.countries:
             countries = args.countries.upper().split(',')
 
         idx = df['GeoId'].apply(lambda x: x in countries)
         cum = df[idx]
-
-    # text-only of latest data
-    if args.output.lower().endswith('.txt'):
-        with open(args.output, "w") as fd:
-            if title == "Cases":
-                fd.write("ID Date        Cases(change) Deaths\n")
-                for country in countries:
-                    i = cum[cum['GeoId'] == country]
-                    iLast = i.iloc[0]
-                    iSum = i.aggregate({"Cases": sum, "Deaths": sum})
-                    fd.write("{} {:%Y-%m-%d} {:>6d}({:>6d}) {:>4d}({:>4d})\n".format(
-                            country, iLast['DateRep'],
-                            iSum["Cases"],
-                            iLast["Cases"],
-                            iSum["Deaths"],
-                            iLast["Deaths"],
-                        )
-                    )
-            else:
-                fd.write("{} on {:%Y-%m-%d}\n".format(title, max(cum.index)))
-                for key in ("Cases", "Deaths"):
-                    fd.write("{}: {}\n".format(key, cum[key][-1]))
-        return
 
     # plot data
     import matplotlib.pyplot as plt
