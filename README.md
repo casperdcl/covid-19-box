@@ -2,8 +2,19 @@
 
 ## Install
 
+Requires Python and either pip or conda.
+
+### pip
+
 ```
 pip install -r requirements.txt
+```
+
+### conda
+
+```
+conda env create -f environment.yml
+conda activate covid-19
 ```
 
 ## Run
