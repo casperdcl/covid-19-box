@@ -17,7 +17,6 @@ Options:
 import logging
 
 from argopt import argopt
-import matplotlib.pyplot as plt
 import pandas as pd
 
 __all__ = ["main", "run"]
@@ -44,10 +43,35 @@ def run(args):
             countries = ids.index
         elif ',' in args.countries:
             countries = args.countries.upper().split(',')
-    
+
         idx = df['GeoId'].apply(lambda x: x in countries)
         cum = df[idx]
 
+    # text-only of latest data
+    if args.output.lower().endswith('.txt'):
+        with open(args.output, "w") as fd:
+            if title == "Cases":
+                fd.write("ID Date        Cases(change) Deaths\n")
+                for country in countries:
+                    i = cum[cum['GeoId'] == country]
+                    iLast = i.iloc[0]
+                    iSum = i.aggregate({"Cases": sum, "Deaths": sum})
+                    fd.write("{} {:%Y-%m-%d} {:>6d}({:>6d}) {:>4d}({:>4d})\n".format(
+                            country, iLast['DateRep'],
+                            iSum["Cases"],
+                            iLast["Cases"],
+                            iSum["Deaths"],
+                            iLast["Deaths"],
+                        )
+                    )
+            else:
+                fd.write("{} on {:%Y-%m-%d}\n".format(title, max(cum.index)))
+                for key in ("Cases", "Deaths"):
+                    fd.write("{}: {}\n".format(key, cum[key][-1]))
+        return
+
+    # plot data
+    import matplotlib.pyplot as plt
     plt.figure()
 
     if title == "Cases":
