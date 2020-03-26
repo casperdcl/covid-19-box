@@ -1,4 +1,4 @@
 argopt
 dvc
-pandas
+pandas>=0.24.0
 requests

@@ -11,10 +11,12 @@ Options:
       or [default: all] or "top"
   -o PATH, --output PATH  : Output path [default: COVID-19.png].
       Can be *.txt (use stdout.txt for stdout).
+  -i PATH, --input PATH  : Input data path [default: COVID-19.csv].
   --log LEVEL  : (FAT|CRITIC)AL|ERROR|WARN(ING)|[default: INFO]|DEBUG|NOTSET
 
 %s
 """
+from __future__ import print_function
 import logging
 import sys
 
@@ -32,26 +34,22 @@ def get_top_geoIds(df, key="Cases", top=10):
     ids = (
         df.groupby("GeoId")
         .aggregate({"Cases": sum, "Deaths": sum})
-        .sort_values(key)[-top:][::-1]
+        .nlargest(top, key)
     )
     return list(ids.index)
 
 
-def run(args):
-    """@param args: RunArgs"""
-    df = pd.read_csv("COVID-19.csv", parse_dates=["DateRep"], dayfirst=True)
+def run_text(df, output, countries):
+    countries = (countries or "all").split(",")
 
-    # text-only of latest data
-    if args.output.lower().endswith(".txt"):
-        countries = (args.countries or "all").split(",")
+    if output[:-4].lower() in ("stdout", "-"):
+        fd = sys.stdout
+        fd_close = lambda: None
+    else:
+        fd = open(output, "w")
+        fd_close = fd.close
 
-        if args.output[:-4].lower() in ("stdout", "-"):
-            fd = sys.stdout
-            fd_close = lambda: None
-        else:
-            fd = open(args.output, "w")
-            fd_close = fd.close
-
+    try:
         print("ID Date        Cases(change) Deaths(chg)", file=fd)
         if "top" in countries:
             i = countries.index("top")
@@ -73,15 +71,25 @@ def run(args):
                 )
                 continue
 
-            last = df[df["GeoId"] == country].iloc[0]
+            last = df[df["GeoId"] == country].nlargest(1, "DateRep").iloc[0]
             print(
                 "{country} {last[DateRep]:%Y-%m-%d} {tot[Cases]:>6d}({last[Cases]:>6d}) {tot[Deaths]:>5d}({last[Deaths]:>4d})".format(
                     country=country, last=last, tot=sums.loc[country],
                 ),
                 file=fd,
             )
-
+    finally:
         fd_close()
+
+
+
+def run(args):
+    """@param args: RunArgs"""
+    df = pd.read_csv(args.input, parse_dates=["DateRep"], dayfirst=True)
+
+    # text-only of latest data
+    if args.output.lower().endswith(".txt"):
+        run_text(df, args.output, args.countries)
         return
 
     if not args.countries or args.countries.lower() == "all":
