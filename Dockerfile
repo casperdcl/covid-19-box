@@ -5,8 +5,8 @@ LABEL maintainer.name="Casper da Costa-Luis" \
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-COPY requirements-noplt.txt .
-RUN pip install --no-cache-dir -r requirements-noplt.txt && rm requirements-noplt.txt
+COPY requirements-gist.txt .
+RUN pip install --no-cache-dir -r requirements-gist.txt && rm requirements-gist.txt
 RUN apt-get update -qq && apt-get install -yqq \
  git \
  && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/*

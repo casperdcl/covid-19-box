@@ -4,4 +4,4 @@
 *.yml
 .dvc/**
 !.dvc/config
-!requirements-noplt.txt
+!requirements-gist.txt
