@@ -66,9 +66,8 @@ dvc update COVID-19.csv.dvc
 dvc repro -P  # auto-generates `world.png` and `top.png`
 ```
 
-[World graph](world.png)
-
-[Highest number of cases](top.png)
+![World graph](world.png)
+![Highest number of cases](top.png)
 
 To manually run,
 
