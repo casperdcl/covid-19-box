@@ -32,7 +32,7 @@ UK 2020-03-25   8077(  1427)   422(  87)
 1. Go to your fork's `Settings` > `Secrets` > `Add a new secret` for each environment secret (below)
 
 ## 🤫 Environment Secrets
-- **gist_id:** The ID portion from your gist url `https://gist.github.com/<github username>/`**`6d5f84419863089a167387da62dd7081`**.
+- **gist_id:** The ID portion from your gist url `https://gist.github.com/<github username>/`**`37496a4e4c84aed9711fbe3ec560888a`**.
 - **gh_token:** The GitHub token generated above.
 - **countries:** Comma-separated list of country IDs. Also can use `all` (world summary), or `top` (10 highest). Example: **top,all,JP**.
 
@@ -67,6 +67,7 @@ dvc repro -P  # auto-generates `world.png` and `top.png`
 ```
 
 ![World graph](world.png)
+
 ![Highest number of cases](top.png)
 
 To manually run,
