@@ -12,7 +12,7 @@ import sys
 
 url = "https://api.github.com/gists/" + os.environ["INPUT_GIST_ID"]
 headers = {"Authorization": "token " + os.environ["INPUT_GH_TOKEN"]}
-log = logging.getLogger(__name__)
+log = logging.getLogger('gistup')
 
 
 if __name__ == "__main__":
