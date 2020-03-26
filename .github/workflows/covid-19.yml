@@ -1,0 +1,17 @@
+name: covid-19-box
+on:
+  schedule:
+    - cron: '6 0 * * *'  # daily at 00:06
+  push:
+    branches: master
+jobs:
+  covid-19:
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v2
+     - name: Update
+       uses: ./
+       with:
+          countries: ${{ secrets.countries }}
+          gh_token: ${{ secrets.gh_token }}
+          gist_id: ${{ secrets.gist_id }}

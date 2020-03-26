@@ -1,0 +1,27 @@
+name: covid-19-box
+author: Casper da Costa-Luis
+description: GitHub Action for injecting COVID-19 status into a gist
+
+inputs:
+  gist_id:
+    required: true
+    description: ID portion from the gist url.
+  gh_token:
+    required: true
+    description: GitHub token to use to update gists.
+  countries:
+    required: false
+    description: "Comma separated. Can be country IDs, 'all' (world summary), or 'top' (10 highest)"
+    default: "top,all"
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.countries }}
+    - ${{ inputs.gist_id }}
+    - ${{ inputs.gh_token }}
+
+branding:
+  icon: globe
+  color: red
