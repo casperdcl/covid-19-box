@@ -40,7 +40,9 @@ def get_top_geoIds(df, key="Cases", top=10):
 
 
 def run_text(df, output, countries):
-    countries = (countries or "all").split(",")
+    if "ALL" not in countries:
+        df = df[df["GeoId"].apply(lambda x: x in countries)]
+    sums = df.groupby("GeoId").aggregate({"Cases": sum, "Deaths": sum})
 
     if output[:-4].lower() in ("stdout", "-"):
         fd = sys.stdout
@@ -51,16 +53,8 @@ def run_text(df, output, countries):
 
     try:
         print("ID Date        Cases(change) Deaths(chg)", file=fd)
-        if "top" in countries:
-            i = countries.index("top")
-            countries = countries[:i] + get_top_geoIds(df) + countries[i + 1 :]
-        if "all" not in countries:
-            df = df[df["GeoId"].apply(lambda x: x in countries)]
-
-        sums = df.groupby("GeoId").aggregate({"Cases": sum, "Deaths": sum})
-
         for country in countries:
-            if country == "all":
+            if country == "ALL":
                 totals = df.groupby("DateRep").aggregate({"Cases": sum, "Deaths": sum})
                 last = totals.iloc[-1]
                 print(
@@ -82,33 +76,34 @@ def run_text(df, output, countries):
         fd_close()
 
 
-
 def run(args):
     """@param args: RunArgs"""
     df = pd.read_csv(args.input, parse_dates=["DateRep"], dayfirst=True)
+    countries = args.countries.upper().split(",") or ["ALL"]
+    while "TOP" in countries:
+        i = countries.index("TOP")
+        countries = countries[:i] + get_top_geoIds(df) + countries[i + 1 :]
 
     # text-only of latest data
     if args.output.lower().endswith(".txt"):
-        run_text(df, args.output, args.countries)
+        run_text(df, args.output, countries)
         return
 
-    if not args.countries or args.countries.lower() == "all":
+    if countries == ["ALL"]:
+        # world summary
         title = "World"
         cum = df.groupby("DateRep").aggregate({"Cases": sum, "Deaths": sum})
-    elif "," not in args.countries and args.countries.lower() != "top":
-        title = args.countries
+    elif len(countries) == 1 and countries[0] != "TOP":
+        # single country
+        title = countries[0]
         cum = (
-            df[df["GeoId"] == args.countries]
+            df[df["GeoId"] == countries[0]]
             .groupby("DateRep")
             .aggregate({"Cases": sum, "Deaths": sum})
         )
     else:
+        # multiple countries
         title = "Cases"
-        if args.countries.lower() == "top":
-            countries = get_top_geoIds(df)
-        elif "," in args.countries:
-            countries = args.countries.upper().split(",")
-
         idx = df["GeoId"].apply(lambda x: x in countries)
         cum = df[idx]
 
