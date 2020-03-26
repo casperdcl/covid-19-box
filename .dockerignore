@@ -1,0 +1,7 @@
+*.png
+*.txt
+*.md
+*.yml
+.dvc/**
+!.dvc/config
+!requirements-noplt.txt
