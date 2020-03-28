@@ -24,7 +24,7 @@ from argopt import argopt
 import pandas as pd
 
 __all__ = ["main", "run"]
-__version__ = "0.0.0"
+__version__ = "1.1.0"
 __author__ = "Casper da Costa-Luis <casper.dcl@physics.org>"
 
 log = logging.getLogger(__name__)

@@ -1,9 +1,9 @@
-md5: 167e17eeb2763976c4e039178268a6a1
+md5: 8b051b4fdf3418261d35ee1fe3826f70
 cmd: python covid19.py -c all -o world.png
 deps:
 - md5: 78599a38d7c8287740d0d622be180c23
   path: COVID-19.csv
-- md5: b6638577ba28b96f85e3372c42f2359d
+- md5: d1e801530374ccde928d89aa153e31fa
   path: covid19.py
 outs:
 - md5: 596687a8b8ab1518147add70e08a1568

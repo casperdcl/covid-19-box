@@ -1,9 +1,9 @@
-md5: 846eb426fbcd50d23a594d56b0ecc70b
+md5: cb0b8eeed5e24fa1d3019b0e762505a5
 cmd: python covid19.py -c top -o top.png
 deps:
 - md5: 78599a38d7c8287740d0d622be180c23
   path: COVID-19.csv
-- md5: b6638577ba28b96f85e3372c42f2359d
+- md5: d1e801530374ccde928d89aa153e31fa
   path: covid19.py
 outs:
 - md5: 55ae20dc11bd52062105b15db6c855ba
