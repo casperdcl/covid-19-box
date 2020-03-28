@@ -1,10 +1,10 @@
-md5: 0a6ac379ec2834cc72a5fc73c5859195
+md5: 742af76b7cbb37c278ecbeea64b7a249
 locked: true
 deps:
-- etag: '"4d698-5a1b0dce6da50"'
-  path: https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide.csv
+- etag: '"f778f3fadf4d61:0"'
+  path: https://opendata.ecdc.europa.eu/covid19/casedistribution/csv
 outs:
-- md5: a082d33bf6a151d61af937ffa98e3db0
+- md5: 78599a38d7c8287740d0d622be180c23
   path: COVID-19.csv
   cache: true
   metric: false

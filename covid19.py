@@ -30,10 +30,10 @@ __author__ = "Casper da Costa-Luis <casper.dcl@physics.org>"
 log = logging.getLogger(__name__)
 
 
-def get_top_geoIds(df, key="Cases", top=10):
+def get_top_geoIds(df, key="cases", top=10):
     ids = (
-        df.groupby("GeoId")
-        .aggregate({"Cases": sum, "Deaths": sum})
+        df.groupby("geoId")
+        .aggregate({"cases": sum, "deaths": sum})
         .nlargest(top, key)
     )
     return list(ids.index)
@@ -41,8 +41,8 @@ def get_top_geoIds(df, key="Cases", top=10):
 
 def run_text(df, output, countries):
     if "ALL" not in countries:
-        df = df[df["GeoId"].apply(lambda x: x in countries)]
-    sums = df.groupby("GeoId").aggregate({"Cases": sum, "Deaths": sum})
+        df = df[df["geoId"].apply(lambda x: x in countries)]
+    sums = df.groupby("geoId").aggregate({"cases": sum, "deaths": sum})
 
     if output[:-4].lower() in ("stdout", "-"):
         fd = sys.stdout
@@ -55,19 +55,19 @@ def run_text(df, output, countries):
         print("ID Date        Cases(change) Deaths(chg)", file=fd)
         for country in countries:
             if country == "ALL":
-                totals = df.groupby("DateRep").aggregate({"Cases": sum, "Deaths": sum})
+                totals = df.groupby("dateRep").aggregate({"cases": sum, "deaths": sum})
                 last = totals.iloc[-1]
                 print(
-                    "-- {last.name:%Y-%m-%d} {tot[Cases]:>6d}({last[Cases]:>6d}) {tot[Deaths]:>5d}({last[Deaths]:>4d})".format(
+                    "-- {last.name:%Y-%m-%d} {tot[cases]:>6d}({last[cases]:>6d}) {tot[deaths]:>5d}({last[deaths]:>4d})".format(
                         last=last, tot=totals.sum(),
                     ),
                     file=fd,
                 )
                 continue
 
-            last = df[df["GeoId"] == country].nlargest(1, "DateRep").iloc[0]
+            last = df[df["geoId"] == country].nlargest(1, "dateRep").iloc[0]
             print(
-                "{country} {last[DateRep]:%Y-%m-%d} {tot[Cases]:>6d}({last[Cases]:>6d}) {tot[Deaths]:>5d}({last[Deaths]:>4d})".format(
+                "{country} {last[dateRep]:%Y-%m-%d} {tot[cases]:>6d}({last[cases]:>6d}) {tot[deaths]:>5d}({last[deaths]:>4d})".format(
                     country=country, last=last, tot=sums.loc[country],
                 ),
                 file=fd,
@@ -78,7 +78,7 @@ def run_text(df, output, countries):
 
 def run(args):
     """@param args: RunArgs"""
-    df = pd.read_csv(args.input, parse_dates=["DateRep"], dayfirst=True)
+    df = pd.read_csv(args.input, parse_dates=["dateRep"], dayfirst=True)
     countries = args.countries.upper().split(",") or ["ALL"]
     while "TOP" in countries:
         i = countries.index("TOP")
@@ -92,19 +92,19 @@ def run(args):
     if countries == ["ALL"]:
         # world summary
         title = "World"
-        cum = df.groupby("DateRep").aggregate({"Cases": sum, "Deaths": sum})
+        cum = df.groupby("dateRep").aggregate({"cases": sum, "deaths": sum})
     elif len(countries) == 1 and countries[0] != "TOP":
         # single country
         title = countries[0]
         cum = (
-            df[df["GeoId"] == countries[0]]
-            .groupby("DateRep")
-            .aggregate({"Cases": sum, "Deaths": sum})
+            df[df["geoId"] == countries[0]]
+            .groupby("dateRep")
+            .aggregate({"cases": sum, "deaths": sum})
         )
     else:
         # multiple countries
-        title = "Cases"
-        idx = df["GeoId"].apply(lambda x: x in countries)
+        title = "cases"
+        idx = df["geoId"].apply(lambda x: x in countries)
         cum = df[idx]
 
     # plot data
@@ -112,16 +112,16 @@ def run(args):
 
     plt.figure()
 
-    if title == "Cases":
-        key = "Cases"
+    if title == "cases":
+        key = "cases"
         for country, ls, m in zip(
             countries, ["-", "--", "-.", ":"] * 99, ".,ov^<>1234sp*hH+xDd|_"
         ):
-            i = cum[cum["GeoId"] == country]
-            plt.semilogy(i["DateRep"], i[key], label=country, ls=ls, marker=m)
+            i = cum[cum["geoId"] == country]
+            plt.semilogy(i["dateRep"], i[key], label=country, ls=ls, marker=m)
             plt.title(title)
     else:
-        for key in ("Cases", "Deaths"):
+        for key in ("cases", "deaths"):
             plt.semilogy(cum[key], label=key)
 
     plt.title(title)
