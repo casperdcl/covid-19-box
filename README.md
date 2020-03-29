@@ -19,9 +19,14 @@ UK 2020-03-25   8077(  1427)   422(  87)
 
 ---
 
-## ✨ Inspiration
+As of now, the automatic [cloud-based pinned gist](#pinned-gist) functionality is text-only;
+while [running locally](#local-install) allows graph plotting.
+
+## ✨ Sources
 
 [Data from ECDC](https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide)
+
+# pinned gist
 
 ## 🎒 Prep Work
 1. Create a new public GitHub Gist (https://gist.github.com/)
@@ -40,24 +45,24 @@ UK 2020-03-25   8077(  1427)   422(  87)
 
 Feel free to use the GitHub Sponsor button to donate towards my work if you're feeling generous <3
 
-## Local Install
+# Local Install
 
 Requires Python and either pip or conda. Supports interactive plotting (rather than just plain-text gists).
 
-### pip
+## pip
 
 ```
 pip install -r requirements.txt
 ```
 
-### conda
+## conda
 
 ```
 conda env create -f environment.yml
 conda activate covid-19
 ```
 
-### Run
+## Run
 
 To (re)generate all graphs and summaries:
 
