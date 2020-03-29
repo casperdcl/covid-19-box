@@ -1,10 +1,10 @@
-md5: cd4b34ec7c8e74faacab67a2078a1280
+md5: 9cd3a367a96eb6a08c037b5278549b24
 locked: true
 deps:
-- etag: '"2f6addaf04d61:0"'
+- etag: '"30718bbdd5d61:0"'
   path: https://opendata.ecdc.europa.eu/covid19/casedistribution/csv
 outs:
-- md5: 78599a38d7c8287740d0d622be180c23
+- md5: 13f80bc9bc18736cad559d69c34c2eb7
   path: COVID-19.csv
   cache: true
   metric: false
