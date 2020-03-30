@@ -1,7 +1,7 @@
 name: covid-19-box
 on:
   schedule:
-    - cron: '6 0 * * *'  # daily at 00:06
+    - cron: '6 */6 * * *'  # every 6h at 6 min past the hour
   push:
     branches: master
 jobs:
