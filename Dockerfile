@@ -5,14 +5,15 @@ LABEL maintainer.name="Casper da Costa-Luis" \
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-COPY requirements-gist.txt .
+COPY src/requirements-gist.txt .
 RUN pip install --no-cache-dir -r requirements-gist.txt && rm requirements-gist.txt
 RUN apt-get update -qq && apt-get install -yqq \
  git \
  && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /wdir
-COPY script.sh *.dvc *.py ./
+COPY *.dvc *.py ./
+COPY src src
 COPY .dvc .dvc
-RUN chmod +x script.sh
-ENTRYPOINT ["/wdir/script.sh"]
+RUN chmod +x src/script.sh
+ENTRYPOINT ["/wdir/src/script.sh"]
