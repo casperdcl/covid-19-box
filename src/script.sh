@@ -6,7 +6,7 @@ dvc config core.no_scm True
 dvc update COVID-19.csv.dvc
 
 # update README.md
-src/readme.sh > README.md
+src/readme.sh
 
 # update gist
 python covid19.py -c "$INPUT_COUNTRIES" -o covid-19.txt

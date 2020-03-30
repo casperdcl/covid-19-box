@@ -4,6 +4,8 @@ set -exuo pipefail
 dvc repro world.txt.dvc
 
 README="$(cat README.md)"
-echo "$README" | head -n5
-cat world.txt
-echo "$README" | tail -n+18
+(
+  echo "$README" | head -n5
+  cat world.txt
+  echo "$README" | tail -n+18
+) > README.md
