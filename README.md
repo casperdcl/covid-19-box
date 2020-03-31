@@ -81,3 +81,12 @@ To manually run,
 dvc update COVID-19.csv.dvc  # at least once
 python covid19.py --help
 ```
+
+# Developers
+
+Debug the GitHub action locally using:
+
+```
+docker-compose build
+docker-compose up
+```

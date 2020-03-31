@@ -1,0 +1,18 @@
+version: '3.4'
+services:
+ covid-19:
+  container_name: covid19
+  image: casperdcl/covid19:latest
+  build:
+   context: .
+   cache_from:
+   - python:3.7-slim
+   - casperdcl/covid19:latest
+  hostname: covid19
+  volumes:
+  - ./:/github/workspace
+  working_dir: /github/workspace
+  environment:
+  - INPUT_GIST_ID
+  - INPUT_COUNTRIES
+  - INPUT_GH_TOKEN
