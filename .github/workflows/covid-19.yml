@@ -9,16 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Update
+      - name: "dvc update && dvc repro"
         uses: ./
         with:
            countries: ${{ secrets.countries }}
            gh_token: ${{ secrets.gh_token }}
            gist_id: ${{ secrets.gist_id }}
-      - name: Update hashes
+      - name: Commit changes
         run: |
           git config user.name "Casper da Costa-Luis"
           git config user.email casper.dcl@physics.org
           git checkout -- .dvc/config
-          git commit -am "update hashes" || :
+          git commit -am "automatic update [ci skip]" || :
           git push
