@@ -9,6 +9,7 @@ Usage:
 Options:
   -c COUNTRIES, --countries COUNTRIES  : Comma-separated Geo IDs (e.g. CN,IT)
       or [default: all] or "top"
+  -k KEY, --key KEY  : [default: deaths]|cases.
   -o PATH, --output PATH  : Output path [default: COVID-19.png].
       Can be *.txt (use stdout.txt for stdout).
   -i PATH, --input PATH  : Input data path [default: COVID-19.csv].
@@ -82,7 +83,7 @@ def run(args):
     countries = args.countries.upper().split(",") or ["ALL"]
     while "TOP" in countries:
         i = countries.index("TOP")
-        countries = countries[:i] + get_top_geoIds(df) + countries[i + 1 :]
+        countries = countries[:i] + get_top_geoIds(df, key=args.key.lower()) + countries[i + 1 :]
 
     # text-only of latest data
     if args.output.lower().endswith(".txt"):
@@ -103,17 +104,18 @@ def run(args):
         )
     else:
         # multiple countries
-        title = "cases"
+        title = args.key.lower()
         idx = df["geoId"].apply(lambda x: x in countries)
         cum = df[idx]
 
     # plot data
     import matplotlib.pyplot as plt
+    from datetime import datetime, timedelta
 
-    plt.figure()
+    plt.figure(figsize=(16, 9), dpi=90)
 
-    if title == "cases":
-        key = "cases"
+    if title == args.key.lower():
+        key = title
         for country, ls, m in zip(
             countries, ["-", "--", "-.", ":"] * 99, ".,ov^<>1234sp*hH+xDd|_"
         ):
@@ -125,6 +127,11 @@ def run(args):
             plt.semilogy(cum[key], label=key)
 
     plt.title(title)
+    t1 = datetime.now()
+    t0 = t1 - timedelta(7 * 10)
+    plt.xlim(t0, t1)
+    xticks = [t1 - timedelta(7 * i) for i in range(10, -1, -1)]
+    plt.xticks(xticks, map("{:%d %b}".format, xticks))
     plt.legend()
     plt.tight_layout()
     plt.savefig(args.output)
