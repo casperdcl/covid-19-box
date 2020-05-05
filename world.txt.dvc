@@ -1,12 +1,12 @@
-md5: cfc19f706e7260ff5fdec3b7989005cf
+md5: 3804328402bb8a8ed5f1f60ad22da782
 cmd: python covid19.py -o world.txt -c top,all
 deps:
-- md5: a03e702c65c29b2357afb613773b18bd
+- md5: 2e0573e2c56ed96e0215489b8761df8c
   path: COVID-19.csv
 - md5: e959bfdd703e8ee54546730d3ad10de9
   path: covid19.py
 outs:
-- md5: 9577d05c845662f751294dd1d55c74b8
+- md5: bf34246cebe08f060ffeafa702e8b06d
   path: world.txt
   cache: true
   metric: false
