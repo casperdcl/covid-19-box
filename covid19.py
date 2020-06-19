@@ -79,7 +79,10 @@ def run_text(df, output, countries):
 
 def run(args):
     """@param args: RunArgs"""
-    df = pd.read_csv(args.input, parse_dates=["dateRep"], dayfirst=True, encoding="UTF-8", error_bad_lines=False)
+    df = pd.read_csv(
+        args.input, parse_dates=["dateRep"], dayfirst=True,
+        dtype={"cases": "Int32", "deaths": "Int32", "popData2019": "Int32"},
+        encoding="UTF-8", error_bad_lines=False)
     countries = args.countries.upper().split(",") or ["ALL"]
     while "TOP" in countries:
         i = countries.index("TOP")
