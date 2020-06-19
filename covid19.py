@@ -53,13 +53,13 @@ def run_text(df, output, countries):
         fd_close = fd.close
 
     try:
-        print("ID Date        Cases(change) Deaths(chg)", file=fd)
+        print("ID Date         Cases(change) Deaths(chng)", file=fd)
         for country in countries:
             if country == "ALL":
                 totals = df.groupby("dateRep").aggregate({"cases": sum, "deaths": sum})
                 last = totals.iloc[-1]
                 print(
-                    "-- {last.name:%Y-%m-%d} {tot[cases]:>6d}({last[cases]:>6d}) {tot[deaths]:>5d}({last[deaths]:>4d})".format(
+                    "-- {last.name:%Y-%m-%d} {tot[cases]:>7.0f}({last[cases]:>6.0f}) {tot[deaths]:>6.0f}({last[deaths]:>4.0f})".format(
                         last=last, tot=totals.sum(),
                     ),
                     file=fd,
@@ -68,7 +68,7 @@ def run_text(df, output, countries):
 
             last = df[df["geoId"] == country].nlargest(1, "dateRep").iloc[0]
             print(
-                "{country} {last[dateRep]:%Y-%m-%d} {tot[cases]:>6d}({last[cases]:>6d}) {tot[deaths]:>5d}({last[deaths]:>4d})".format(
+                "{country} {last[dateRep]:%Y-%m-%d} {tot[cases]:>7.0f}({last[cases]:>6.0f}) {tot[deaths]:>6.0f}({last[deaths]:>4.0f})".format(
                     country=country, last=last, tot=sums.loc[country],
                 ),
                 file=fd,
@@ -81,8 +81,10 @@ def run(args):
     """@param args: RunArgs"""
     df = pd.read_csv(
         args.input, parse_dates=["dateRep"], dayfirst=True,
-        dtype={"cases": "Int32", "deaths": "Int32", "popData2019": "Int32"},
+        dtype={"cases": "Int32", "deaths": "Int32"},
         encoding="UTF-8", error_bad_lines=False)
+    for i in ("cases", "deaths"):
+        df[i][pd.isna(df[i])] = 0
     countries = args.countries.upper().split(",") or ["ALL"]
     while "TOP" in countries:
         i = countries.index("TOP")
