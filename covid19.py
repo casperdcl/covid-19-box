@@ -12,7 +12,7 @@ Options:
   -k KEY, --key KEY  : [default: deaths]|cases.
   -o PATH, --output PATH  : Output path [default: COVID-19.png].
       Can be *.txt (use stdout.txt for stdout).
-  -i PATH, --input PATH  : Input data path [default: COVID-19.csv].
+  -i PATH, --input PATH  : Input data path [default: COVID-19.xlsx].
   --log LEVEL  : (FAT|CRITIC)AL|ERROR|WARN(ING)|[default: INFO]|DEBUG|NOTSET
 
 %s
@@ -79,7 +79,8 @@ def run_text(df, output, countries):
 
 def run(args):
     """@param args: RunArgs"""
-    df = pd.read_csv(
+    input_type = {"csv": "csv", "xlsx": "excel"}[args.input.rsplit('.')[1]]
+    df = getattr(pd, 'read_' + input_type)(
         args.input, parse_dates=["dateRep"], dayfirst=True,
         dtype={"cases": "Int32", "deaths": "Int32"},
         encoding="UTF-8", error_bad_lines=False)

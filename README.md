@@ -3,18 +3,18 @@
 GitHub Action for injecting COVID-19 status into a gist.
 
 ```
-ID Date         Cases(change) Deaths(chng)
-US 2020-06-19 2191052( 27762) 118434( 717)
-BR 2020-06-19  978142( 22765)  47748(1238)
-UK 2020-06-19  300469(  1218)  42288( 135)
-IT 2020-06-19  238159(   331)  34514(  66)
-FR 2020-06-19  158641(   467)  29603(  28)
-ES 2020-06-18  245268(   585)  29054(   0)
-MX 2020-06-19  165455(  5662)  19747( 667)
-IN 2020-06-19  380532( 13586)  12573( 336)
-BE 2020-06-19   60348(   104)   9683(   8)
-IR 2020-06-19  197647(  2596)   9272(  87)
--- 2020-06-19 8456508(138360) 455777(5147)
+ID Date        Cases(change) Deaths(chg)
+US 2020-04-26 939053( 48529) 53189(2172)
+IT 2020-04-26 195351(  2357) 26384( 415)
+FR 2020-04-26 124114(  1537) 22614( 369)
+ES 2020-04-25 219764(  6740) 22524( 367)
+UK 2020-04-26 148377(  4913) 20319( 813)
+BE 2020-04-26  45325(  1032)  6917( 238)
+IR 2020-04-26  89328(  1134)  5650(  76)
+DE 2020-04-26 154175(  1737)  5640( 140)
+CN 2020-04-26  83909(    10)  4636(   0)
+NL 2020-04-26  37190(   655)  4409( 120)
+-- 2020-04-26 2844712( 99968) 201315(5929)
 ```
 
 ---
@@ -67,7 +67,7 @@ conda activate covid-19
 To (re)generate all graphs and summaries:
 
 ```
-dvc update COVID-19.csv.dvc
+dvc update COVID-19.xlsx.dvc
 dvc repro -P  # auto-generates `world.png` and `top.png`
 ```
 
@@ -78,7 +78,7 @@ dvc repro -P  # auto-generates `world.png` and `top.png`
 To manually run,
 
 ```
-dvc update COVID-19.csv.dvc  # at least once
+dvc update COVID-19.xlsx.dvc  # at least once
 python covid19.py --help
 ```
 

@@ -6,7 +6,7 @@ pushd "$src"/..
 dvc config core.no_scm True
 
 # updata source data
-dvc update COVID-19.csv.dvc
+dvc update COVID-19.xlsx.dvc
 
 # update README.md
 src/readme.sh

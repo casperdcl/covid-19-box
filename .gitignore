@@ -1,4 +1,6 @@
+*.py[co]
 /COVID-19.csv
 /world.png
 /top.png
 /world.txt
+/COVID-19.xlsx
