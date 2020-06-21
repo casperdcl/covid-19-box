@@ -1,4 +1,4 @@
 argopt
-dvc
+dvc>=1.0.0b0
 matplotlib
 pandas>=0.24.0
