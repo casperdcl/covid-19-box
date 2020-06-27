@@ -1,10 +1,10 @@
-md5: 8d13d9fc49add75868f3245af1e559ad
+md5: 2fe9bf076724fa1ecbc3f5fd6a2e85de
 cmd: python covid19.py -o world.txt -c top,all
 deps:
-- md5: 9e03211550a143b8a21cce60fad83e44
+- md5: dae34931694896bf4cb4647c60ce60a5
   path: COVID-19.xlsx
 - md5: 60deb6fdec3073aa3710a45740c718ad
   path: covid19.py
 outs:
-- md5: d26f8c355da60a164e5f58baebfa8dbd
+- md5: 728d0b3ca879d35940768335140f1785
   path: world.txt
