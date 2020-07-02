@@ -1,8 +1,8 @@
-md5: a0a3812ccb4dadbaf409060a61215f54
+md5: e2eedc5ead4eb3fb62f3a475cc33fb88
 deps:
-- etag: '"130b59-5a94b5a07e348"'
+- etag: '"1336fe-5a95e2ba2b240"'
   path: https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide.xlsx
 outs:
-- md5: b38bbf1f638c3c52c2a7b775dea246f1
+- md5: e232d9bd1de09a99e0650da92dc88e61
   path: COVID-19.xlsx
 frozen: true
