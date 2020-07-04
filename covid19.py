@@ -117,6 +117,8 @@ def run(args):
     # plot data
     import matplotlib.pyplot as plt
     from datetime import datetime, timedelta
+    from pandas.plotting import register_matplotlib_converters
+    register_matplotlib_converters()
 
     plt.figure(figsize=(16, 9), dpi=90)
 

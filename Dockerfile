@@ -12,7 +12,7 @@ RUN apt-get update -qq && apt-get install -yqq \
  && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /wdir
-COPY *.dvc *.py README.md ./
+COPY dvc.yaml *.dvc *.py README.md ./
 COPY src src
 COPY .dvc .dvc
 RUN chmod +x src/script.sh

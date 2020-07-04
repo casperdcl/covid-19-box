@@ -3,7 +3,7 @@ set -exuo pipefail
 src="$(realpath "$(dirname "${0}")")"
 pushd "$src"/..
 
-dvc repro world.txt.dvc
+dvc repro txt
 
 set +x
 README="$(cat README.md)"

@@ -1,0 +1,30 @@
+top:
+  cmd: python covid19.py -c top -o top.png
+  deps:
+  - path: COVID-19.xlsx
+    md5: d7ab8d895e3254698d98ee0f6e663aba
+  - path: covid19.py
+    md5: a88e30399068f07f8f01e241024953c1
+  outs:
+  - path: top.png
+    md5: 690b5a6b36229c48747ce171ac7f44e8
+world:
+  cmd: python covid19.py -c all -o world.png
+  deps:
+  - path: COVID-19.xlsx
+    md5: d7ab8d895e3254698d98ee0f6e663aba
+  - path: covid19.py
+    md5: a88e30399068f07f8f01e241024953c1
+  outs:
+  - path: world.png
+    md5: 5e089460aa977b0957ec2d1ccd27907b
+txt:
+  cmd: python covid19.py -o world.txt -c top,all
+  deps:
+  - path: COVID-19.xlsx
+    md5: d7ab8d895e3254698d98ee0f6e663aba
+  - path: covid19.py
+    md5: a88e30399068f07f8f01e241024953c1
+  outs:
+  - path: world.txt
+    md5: 3e7864cbb5ee3a0ea9dd3aaecb978964

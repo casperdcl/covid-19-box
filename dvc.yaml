@@ -1,0 +1,22 @@
+stages:
+  top:
+    cmd: python covid19.py -c top -o top.png
+    deps:
+    - COVID-19.xlsx
+    - covid19.py
+    outs:
+    - top.png
+  world:
+    cmd: python covid19.py -c all -o world.png
+    deps:
+    - COVID-19.xlsx
+    - covid19.py
+    outs:
+    - world.png
+  txt:
+    cmd: python covid19.py -o world.txt -c top,all
+    deps:
+    - COVID-19.xlsx
+    - covid19.py
+    outs:
+    - world.txt
