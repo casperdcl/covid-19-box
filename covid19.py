@@ -12,7 +12,7 @@ Options:
   -k KEY, --key KEY  : [default: deaths]|cases.
   -o PATH, --output PATH  : Output path [default: COVID-19.png].
       Can be *.txt (use stdout.txt for stdout).
-  -i PATH, --input PATH  : Input data path [default: COVID-19.xlsx].
+  -i PATH, --input PATH  : Input data path [default: COVID-19.csv].
   --log LEVEL  : (FAT|CRITIC)AL|ERROR|WARN(ING)|[default: INFO]|DEBUG|NOTSET
 
 %s
