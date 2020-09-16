@@ -1,8 +1,8 @@
-md5: 3b5b48d48c32d2289051396e76bd8c3d
+md5: f06e59575c7a19d2d7884158665754a6
 deps:
-- etag: '"b9df74503f8bd61:0"'
+- etag: '"0b914ae118cd61:0"'
   path: https://opendata.ecdc.europa.eu/covid19/casedistribution/csv
 outs:
-- md5: c9bd6597dd98da6466876980105069c2
+- md5: 07974ddd74d3f11685d7ac45f8c3d2d9
   path: COVID-19.csv
 frozen: true
