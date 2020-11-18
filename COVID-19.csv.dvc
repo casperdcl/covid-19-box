@@ -5,4 +5,5 @@ deps:
 outs:
 - md5: 32bcced3552235d7518c776cfe6f387d
   path: COVID-19.csv
+  size: 3890322
 frozen: true
