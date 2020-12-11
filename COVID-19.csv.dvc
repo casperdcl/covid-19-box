@@ -1,9 +1,9 @@
-md5: 3b22b75bd597291c4096650e5aa6340e
+md5: 76209b298711209edd2a72a00233cca4
 deps:
-- etag: '"1aef4e4fdbced61:0"'
+- etag: '"cfb3bb17a4cfd61:0"'
   path: https://opendata.ecdc.europa.eu/covid19/casedistribution/csv
 outs:
-- md5: 05e0ca1c6f974f00714448300b7dde02
+- md5: c279a7a34b06441661dd7fc1ee9ea237
   path: COVID-19.csv
-  size: 4245220
+  size: 4260755
 frozen: true
