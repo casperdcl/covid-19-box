@@ -9,7 +9,7 @@ Usage:
 Options:
   -c COUNTRIES, --countries COUNTRIES  : Comma-separated Geo IDs (e.g. CN,IT)
       or [default: all] or "top"
-  -k KEY, --key KEY  : [default: deaths]|cases.
+  -k KEY, --key KEY  : [default: deaths_weekly]|cases_weekly.
   -o PATH, --output PATH  : Output path [default: COVID-19.png].
       Can be *.txt (use stdout.txt for stdout).
   -i PATH, --input PATH  : Input data path [default: COVID-19.csv].
@@ -31,10 +31,10 @@ __author__ = "Casper da Costa-Luis <casper.dcl@physics.org>"
 log = logging.getLogger(__name__)
 
 
-def get_top_geoIds(df, key="cases", top=10):
+def get_top_geoIds(df, key="cases_weekly", top=10):
     ids = (
         df.groupby("geoId")
-        .aggregate({"cases": sum, "deaths": sum})
+        .aggregate({"cases_weekly": sum, "deaths_weekly": sum})
         .nlargest(top, key)
     )
     return list(ids.index)
@@ -43,7 +43,7 @@ def get_top_geoIds(df, key="cases", top=10):
 def run_text(df, output, countries):
     if "ALL" not in countries:
         df = df[df["geoId"].apply(lambda x: x in countries)]
-    sums = df.groupby("geoId").aggregate({"cases": sum, "deaths": sum})
+    sums = df.groupby("geoId").aggregate({"cases_weekly": sum, "deaths_weekly": sum})
 
     if output[:-4].lower() in ("stdout", "-"):
         fd = sys.stdout
@@ -56,10 +56,10 @@ def run_text(df, output, countries):
         print("ID Date         Cases(change) Deaths(chng)", file=fd)
         for country in countries:
             if country == "ALL":
-                totals = df.groupby("dateRep").aggregate({"cases": sum, "deaths": sum})
+                totals = df.groupby("dateRep").aggregate({"cases_weekly": sum, "deaths_weekly": sum})
                 last = totals.iloc[-1]
                 print(
-                    "-- {last.name:%Y-%m-%d} {tot[cases]:>7.0f}({last[cases]:>6.0f}) {tot[deaths]:>6.0f}({last[deaths]:>4.0f})".format(
+                    "-- {last.name:%Y-%m-%d} {tot[cases_weekly]:>7.0f}({last[cases_weekly]:>6.0f}) {tot[deaths_weekly]:>6.0f}({last[deaths_weekly]:>4.0f})".format(
                         last=last, tot=totals.sum(),
                     ),
                     file=fd,
@@ -68,7 +68,7 @@ def run_text(df, output, countries):
 
             last = df[df["geoId"] == country].nlargest(1, "dateRep").iloc[0]
             print(
-                "{country} {last[dateRep]:%Y-%m-%d} {tot[cases]:>7.0f}({last[cases]:>6.0f}) {tot[deaths]:>6.0f}({last[deaths]:>4.0f})".format(
+                "{country} {last[dateRep]:%Y-%m-%d} {tot[cases_weekly]:>7.0f}({last[cases_weekly]:>6.0f}) {tot[deaths_weekly]:>6.0f}({last[deaths_weekly]:>4.0f})".format(
                     country=country, last=last, tot=sums.loc[country],
                 ),
                 file=fd,
@@ -82,9 +82,9 @@ def run(args):
     input_type = {"csv": "csv", "xlsx": "excel"}[args.input.rsplit('.')[1]]
     df = getattr(pd, 'read_' + input_type)(
         args.input, parse_dates=["dateRep"], dayfirst=True,
-        dtype={"cases": "Int32", "deaths": "Int32"},
+        dtype={"cases_weekly": "Int32", "deaths_weekly": "Int32"},
         encoding="UTF-8", error_bad_lines=False)
-    for i in ("cases", "deaths"):
+    for i in ("cases_weekly", "deaths_weekly"):
         df[i][pd.isna(df[i])] = 0
     countries = args.countries.upper().split(",") or ["ALL"]
     while "TOP" in countries:
@@ -99,14 +99,14 @@ def run(args):
     if countries == ["ALL"]:
         # world summary
         title = "World"
-        cum = df.groupby("dateRep").aggregate({"cases": sum, "deaths": sum})
+        cum = df.groupby("dateRep").aggregate({"cases_weekly": sum, "deaths_weekly": sum})
     elif len(countries) == 1 and countries[0] != "TOP":
         # single country
         title = countries[0]
         cum = (
             df[df["geoId"] == countries[0]]
             .groupby("dateRep")
-            .aggregate({"cases": sum, "deaths": sum})
+            .aggregate({"cases_weekly": sum, "deaths_weekly": sum})
         )
     else:
         # multiple countries
@@ -131,7 +131,7 @@ def run(args):
             plt.semilogy(i["dateRep"], i[key], label=country, ls=ls, marker=m)
             plt.title(title)
     else:
-        for key in ("cases", "deaths"):
+        for key in ("cases_weekly", "deaths_weekly"):
             plt.semilogy(cum[key], label=key)
 
     plt.title(title)
