@@ -136,10 +136,10 @@ def run(args):
 
     plt.title(title)
     t1 = datetime.now()
-    t0 = t1 - timedelta(7 * 10)
-    plt.xlim(t0, t1)
-    xticks = [t1 - timedelta(7 * i) for i in range(10, -1, -1)]
-    plt.xticks(xticks, map("{:%d %b}".format, xticks))
+    # t0 = t1 - timedelta(7 * 52)
+    plt.xlim(None, t1)
+    # xticks = [t1 - timedelta(7 * i) for i in range(52, -1, -1)]
+    # plt.xticks(xticks, map("{:%d %b}".format, xticks))
     plt.legend()
     plt.tight_layout()
     plt.savefig(args.output)
