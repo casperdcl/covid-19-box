@@ -53,13 +53,13 @@ def run_text(df, output, countries):
         fd_close = fd.close
 
     try:
-        print("ID Date         Cases(change) Deaths(chng)", file=fd)
+        print("ID Date         Cases/wk(   change)  Deaths(change)", file=fd)
         for country in countries:
             if country == "ALL":
                 totals = df.groupby("dateRep").aggregate({"cases_weekly": sum, "deaths_weekly": sum})
                 last = totals.iloc[-1]
                 print(
-                    "-- {last.name:%Y-%m-%d} {tot[cases_weekly]:>7.0f}({last[cases_weekly]:>6.0f}) {tot[deaths_weekly]:>6.0f}({last[deaths_weekly]:>4.0f})".format(
+                        "-- {last.name:%Y-%m-%d} {tot[cases_weekly]:>10,.0f}({last[cases_weekly]:>9,.0f}) {tot[deaths_weekly]:>7,.0f}({last[deaths_weekly]:>6,.0f})".format(
                         last=last, tot=totals.sum(),
                     ),
                     file=fd,
@@ -68,7 +68,7 @@ def run_text(df, output, countries):
 
             last = df[df["geoId"] == country].nlargest(1, "dateRep").iloc[0]
             print(
-                "{country} {last[dateRep]:%Y-%m-%d} {tot[cases_weekly]:>7.0f}({last[cases_weekly]:>6.0f}) {tot[deaths_weekly]:>6.0f}({last[deaths_weekly]:>4.0f})".format(
+                "{country} {last[dateRep]:%Y-%m-%d} {tot[cases_weekly]:>10,.0f}({last[cases_weekly]:>9,.0f}) {tot[deaths_weekly]:>7,.0f}({last[deaths_weekly]:>6,.0f})".format(
                     country=country, last=last, tot=sums.loc[country],
                 ),
                 file=fd,
