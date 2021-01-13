@@ -1,9 +1,9 @@
-md5: 937e8eba30980a38c7c8c7643109c9d0
-deps:
-- etag: '"b9f7f681b6e9d61:0"'
-  path: https://opendata.ecdc.europa.eu/covid19/casedistribution/csv
-outs:
-- md5: 827e79c0d6ca44cfdb9ea10dad2da754
-  path: COVID-19.csv
-  size: 624015
+md5: feb179e989e940f753a7295675b5eb28
 frozen: true
+deps:
+- etag: W/"da1dd974663f7bbccf2e3eb1446a92b1aa30ed7bce597978a553ef770c5a885b"
+  path: https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv
+outs:
+- md5: 6d98e0101d4c7062087104f7dfbe6574
+  size: 14968849
+  path: COVID-19.csv

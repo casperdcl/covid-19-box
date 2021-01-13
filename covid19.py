@@ -9,7 +9,7 @@ Usage:
 Options:
   -c COUNTRIES, --countries COUNTRIES  : Comma-separated Geo IDs (e.g. CN,IT)
       or [default: all] or "top"
-  -k KEY, --key KEY  : [default: deaths_weekly]|cases_weekly.
+  -k KEY, --key KEY  : [default: new_deaths]|new_cases.
   -o PATH, --output PATH  : Output path [default: COVID-19.png].
       Can be *.txt (use stdout.txt for stdout).
   -i PATH, --input PATH  : Input data path [default: COVID-19.csv].
@@ -31,10 +31,10 @@ __author__ = "Casper da Costa-Luis <casper.dcl@physics.org>"
 log = logging.getLogger(__name__)
 
 
-def get_top_geoIds(df, key="cases_weekly", top=10):
+def get_top_iso_codes(df, key="new_cases", top=10):
     ids = (
-        df.groupby("geoId")
-        .aggregate({"cases_weekly": sum, "deaths_weekly": sum})
+        df.groupby("iso_code")
+        .aggregate({"new_cases": sum, "new_deaths": sum})
         .nlargest(top, key)
     )
     return list(ids.index)
@@ -42,8 +42,8 @@ def get_top_geoIds(df, key="cases_weekly", top=10):
 
 def run_text(df, output, countries):
     if "ALL" not in countries:
-        df = df[df["geoId"].apply(lambda x: x in countries)]
-    sums = df.groupby("geoId").aggregate({"cases_weekly": sum, "deaths_weekly": sum})
+        df = df[df["iso_code"].apply(lambda x: x in countries)]
+    sums = df.groupby("iso_code").aggregate({"new_cases": sum, "new_deaths": sum})
 
     if output[:-4].lower() in ("stdout", "-"):
         fd = sys.stdout
@@ -53,22 +53,22 @@ def run_text(df, output, countries):
         fd_close = fd.close
 
     try:
-        print("ID Date         Cases/wk(   change)  Deaths(change)", file=fd)
+        print("ID Date            Cases( change)    Deaths(chnge)", file=fd)
         for country in countries:
             if country == "ALL":
-                totals = df.groupby("dateRep").aggregate({"cases_weekly": sum, "deaths_weekly": sum})
-                last = totals.iloc[-1]
+                totals = df.groupby("date").aggregate({"new_cases": sum, "new_deaths": sum})
+                last = totals.iloc[-2]
                 print(
-                        "-- {last.name:%Y-%m-%d} {tot[cases_weekly]:>10,.0f}({last[cases_weekly]:>9,.0f}) {tot[deaths_weekly]:>7,.0f}({last[deaths_weekly]:>6,.0f})".format(
+                        "-- {last.name:%Y-%m-%d} {tot[new_cases]:>10,.0f}({last[new_cases]:>7,.0f}) {tot[new_deaths]:>9,.0f}({last[new_deaths]:>5,.0f})".format(
                         last=last, tot=totals.sum(),
                     ),
                     file=fd,
                 )
                 continue
 
-            last = df[df["geoId"] == country].nlargest(1, "dateRep").iloc[0]
+            last = df[df["iso_code"] == country].nlargest(1, "date").iloc[0]
             print(
-                "{country} {last[dateRep]:%Y-%m-%d} {tot[cases_weekly]:>10,.0f}({last[cases_weekly]:>9,.0f}) {tot[deaths_weekly]:>7,.0f}({last[deaths_weekly]:>6,.0f})".format(
+                "{country:.2s} {last[date]:%Y-%m-%d} {tot[new_cases]:>10,.0f}({last[new_cases]:>7,.0f}) {tot[new_deaths]:>9,.0f}({last[new_deaths]:>5,.0f})".format(
                     country=country, last=last, tot=sums.loc[country],
                 ),
                 file=fd,
@@ -80,16 +80,18 @@ def run_text(df, output, countries):
 def run(args):
     """@param args: RunArgs"""
     input_type = {"csv": "csv", "xlsx": "excel"}[args.input.rsplit('.')[1]]
+    dtype={i: "Int32" for i in ["total_cases", "new_cases", "total_deaths", "new_deaths"]}
+    dtype.update({"population": "Int64"})
     df = getattr(pd, 'read_' + input_type)(
-        args.input, parse_dates=["dateRep"], dayfirst=True,
-        dtype={"cases_weekly": "Int32", "deaths_weekly": "Int32"},
+        args.input, parse_dates=["date"], dtype=dtype,
         encoding="UTF-8", error_bad_lines=False)
-    for i in ("cases_weekly", "deaths_weekly"):
-        df[i][pd.isna(df[i])] = 0
+    df = df[df.iso_code != "OWID_WRL"]
+    for i in ("new_cases", "new_deaths"):
+        df[i] = df[i].fillna(0)
     countries = args.countries.upper().split(",") or ["ALL"]
     while "TOP" in countries:
         i = countries.index("TOP")
-        countries = countries[:i] + get_top_geoIds(df, key=args.key.lower()) + countries[i + 1 :]
+        countries = countries[:i] + get_top_iso_codes(df, key=args.key.lower()) + countries[i + 1 :]
 
     # text-only of latest data
     if args.output.lower().endswith(".txt"):
@@ -99,19 +101,19 @@ def run(args):
     if countries == ["ALL"]:
         # world summary
         title = "World"
-        cum = df.groupby("dateRep").aggregate({"cases_weekly": sum, "deaths_weekly": sum})
+        cum = df.groupby("date").aggregate({"new_cases": sum, "new_deaths": sum})
     elif len(countries) == 1 and countries[0] != "TOP":
         # single country
         title = countries[0]
         cum = (
-            df[df["geoId"] == countries[0]]
-            .groupby("dateRep")
-            .aggregate({"cases_weekly": sum, "deaths_weekly": sum})
+            df[df["iso_code"] == countries[0]]
+            .groupby("date")
+            .aggregate({"new_cases": sum, "new_deaths": sum})
         )
     else:
         # multiple countries
         title = args.key.lower()
-        idx = df["geoId"].apply(lambda x: x in countries)
+        idx = df["iso_code"].apply(lambda x: x in countries)
         cum = df[idx]
 
     # plot data
@@ -127,11 +129,11 @@ def run(args):
         for country, ls, m in zip(
             countries, ["-", "--", "-.", ":"] * 99, ".,ov^<>1234sp*hH+xDd|_"
         ):
-            i = cum[cum["geoId"] == country]
-            plt.semilogy(i["dateRep"], i[key], label=country, ls=ls, marker=m)
+            i = cum[cum["iso_code"] == country]
+            plt.semilogy(i["date"], i[key], label=country, ls=ls, marker=m)
             plt.title(title)
     else:
-        for key in ("cases_weekly", "deaths_weekly"):
+        for key in ("new_cases", "new_deaths"):
             plt.semilogy(cum[key], label=key)
 
     plt.title(title)
