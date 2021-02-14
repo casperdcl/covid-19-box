@@ -4,10 +4,9 @@ LABEL maintainer.name="Casper da Costa-Luis" \
       repository.url="https://github.com/casperdcl/covid-19-box"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
 
 RUN apt-get update -qq && apt-get install -yqq \
- git gcc libssl-dev libffi-dev \
+ git gcc \
  && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY src/requirements-gist.txt .
 RUN pip install -r requirements-gist.txt && pip cache purge && rm requirements-gist.txt
