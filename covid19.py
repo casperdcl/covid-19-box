@@ -85,7 +85,7 @@ def run(args):
     df = getattr(pd, 'read_' + input_type)(
         args.input, parse_dates=["date"], dtype=dtype,
         encoding="UTF-8", error_bad_lines=False)
-    df = df[df.iso_code != "OWID_WRL"]
+    df = df[~df.iso_code.str.startswith("OWID")]
     for i in ("new_cases", "new_deaths"):
         df[i] = df[i].fillna(0)
     countries = args.countries.upper().split(",") or ["ALL"]
