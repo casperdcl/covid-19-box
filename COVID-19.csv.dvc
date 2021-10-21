@@ -1,10 +1,10 @@
-md5: c5d589683c1fa4c6db902eaa9b0fafc6
+md5: 3034b2bc4674d83435fced85ff491f29
 frozen: true
 deps:
 - path: https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv
-  size: 34336580
-  checksum: '"e86738264e98c0fdfd2edefebbf2132cbb1e4878b2ec02ea8aedf10fe17fe173"'
+  size: 34356283
+  checksum: '"b39e6d00e74a91b3166fa5746908553577ffef02511fffabca70fa259212f27d"'
 outs:
-- md5: a85970f975fc82515e637449ff6471d6
-  size: 34336580
+- md5: 25ea58baa107184c8ba773609de7c2a2
+  size: 34356283
   path: COVID-19.csv
