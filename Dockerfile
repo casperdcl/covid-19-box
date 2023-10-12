@@ -1,4 +1,4 @@
-FROM python:3.7-slim
+FROM python:3.8.18-slim
 LABEL maintainer.name="Casper da Costa-Luis" \
       maintainer.email="casper.dcl@physics.org" \
       repository.url="https://github.com/casperdcl/covid-19-box"
